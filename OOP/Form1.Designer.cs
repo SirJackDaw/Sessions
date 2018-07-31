@@ -45,14 +45,32 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btnDelMark = new System.Windows.Forms.Button();
+            this.btnPutMark = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
+            this.tBMark = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.tBSubID = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.tBStudID = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.lbIDs = new System.Windows.Forms.ListBox();
+            this.rBMidMark = new System.Windows.Forms.RadioButton();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.btnShowAll = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.tBID = new System.Windows.Forms.TextBox();
+            this.rBAtoZ = new System.Windows.Forms.RadioButton();
             this.dBShSub = new System.Windows.Forms.ListBox();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.lBLogs = new System.Windows.Forms.ListBox();
             this.dBShStud = new System.Windows.Forms.ListBox();
             this.btnSStud = new System.Windows.Forms.Button();
             this.btnSSub = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -212,22 +230,190 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.btnDelMark);
+            this.tabPage2.Controls.Add(this.btnPutMark);
+            this.tabPage2.Controls.Add(this.label10);
+            this.tabPage2.Controls.Add(this.tBMark);
+            this.tabPage2.Controls.Add(this.label9);
+            this.tabPage2.Controls.Add(this.tBSubID);
+            this.tabPage2.Controls.Add(this.label8);
+            this.tabPage2.Controls.Add(this.tBStudID);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(545, 549);
+            this.tabPage2.Size = new System.Drawing.Size(543, 549);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Редактировать";
+            this.tabPage2.Text = "Добавить оценки";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // btnDelMark
+            // 
+            this.btnDelMark.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnDelMark.Location = new System.Drawing.Point(238, 110);
+            this.btnDelMark.Name = "btnDelMark";
+            this.btnDelMark.Size = new System.Drawing.Size(205, 34);
+            this.btnDelMark.TabIndex = 7;
+            this.btnDelMark.Text = "Удалить";
+            this.btnDelMark.UseVisualStyleBackColor = true;
+            this.btnDelMark.Click += new System.EventHandler(this.btnDelMark_Click);
+            // 
+            // btnPutMark
+            // 
+            this.btnPutMark.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnPutMark.Location = new System.Drawing.Point(238, 73);
+            this.btnPutMark.Name = "btnPutMark";
+            this.btnPutMark.Size = new System.Drawing.Size(205, 34);
+            this.btnPutMark.TabIndex = 6;
+            this.btnPutMark.Text = "Поставить";
+            this.btnPutMark.UseVisualStyleBackColor = true;
+            this.btnPutMark.Click += new System.EventHandler(this.btnPutMark_Click);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label10.Location = new System.Drawing.Point(6, 94);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(164, 25);
+            this.label10.TabIndex = 5;
+            this.label10.Text = "Введите Оценку";
+            // 
+            // tBMark
+            // 
+            this.tBMark.Location = new System.Drawing.Point(11, 122);
+            this.tBMark.Name = "tBMark";
+            this.tBMark.Size = new System.Drawing.Size(205, 22);
+            this.tBMark.TabIndex = 4;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label9.Location = new System.Drawing.Point(233, 18);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(218, 25);
+            this.label9.TabIndex = 3;
+            this.label9.Text = "Введите ID Предмета";
+            // 
+            // tBSubID
+            // 
+            this.tBSubID.Location = new System.Drawing.Point(238, 46);
+            this.tBSubID.Name = "tBSubID";
+            this.tBSubID.Size = new System.Drawing.Size(205, 22);
+            this.tBSubID.TabIndex = 2;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label8.Location = new System.Drawing.Point(6, 18);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(210, 25);
+            this.label8.TabIndex = 1;
+            this.label8.Text = "Введите ID Студента";
+            // 
+            // tBStudID
+            // 
+            this.tBStudID.Location = new System.Drawing.Point(11, 46);
+            this.tBStudID.Name = "tBStudID";
+            this.tBStudID.Size = new System.Drawing.Size(205, 22);
+            this.tBStudID.TabIndex = 0;
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.btnClear);
+            this.tabPage3.Controls.Add(this.lbIDs);
+            this.tabPage3.Controls.Add(this.rBMidMark);
+            this.tabPage3.Controls.Add(this.checkBox1);
+            this.tabPage3.Controls.Add(this.btnShowAll);
+            this.tabPage3.Controls.Add(this.label11);
+            this.tabPage3.Controls.Add(this.tBID);
+            this.tabPage3.Controls.Add(this.rBAtoZ);
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(545, 549);
+            this.tabPage3.Size = new System.Drawing.Size(543, 549);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Найти";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(3, 516);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(537, 30);
+            this.btnClear.TabIndex = 8;
+            this.btnClear.Text = "Очистить";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // lbIDs
+            // 
+            this.lbIDs.FormattingEnabled = true;
+            this.lbIDs.ImeMode = System.Windows.Forms.ImeMode.Katakana;
+            this.lbIDs.ItemHeight = 16;
+            this.lbIDs.Location = new System.Drawing.Point(3, 63);
+            this.lbIDs.Name = "lbIDs";
+            this.lbIDs.Size = new System.Drawing.Size(537, 452);
+            this.lbIDs.TabIndex = 7;
+            // 
+            // rBMidMark
+            // 
+            this.rBMidMark.AutoSize = true;
+            this.rBMidMark.Location = new System.Drawing.Point(302, 38);
+            this.rBMidMark.Name = "rBMidMark";
+            this.rBMidMark.Size = new System.Drawing.Size(122, 21);
+            this.rBMidMark.TabIndex = 6;
+            this.rBMidMark.TabStop = true;
+            this.rBMidMark.Text = "Средний балл";
+            this.rBMidMark.UseVisualStyleBackColor = true;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(393, 11);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(98, 21);
+            this.checkBox1.TabIndex = 4;
+            this.checkBox1.Text = "checkBox1";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // btnShowAll
+            // 
+            this.btnShowAll.Location = new System.Drawing.Point(209, 12);
+            this.btnShowAll.Name = "btnShowAll";
+            this.btnShowAll.Size = new System.Drawing.Size(87, 50);
+            this.btnShowAll.TabIndex = 3;
+            this.btnShowAll.Text = "Показать";
+            this.btnShowAll.UseVisualStyleBackColor = true;
+            this.btnShowAll.Click += new System.EventHandler(this.btnShowAll_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label11.Location = new System.Drawing.Point(0, 12);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(189, 20);
+            this.label11.TabIndex = 2;
+            this.label11.Text = "Введите ID студента\r\n";
+            // 
+            // tBID
+            // 
+            this.tBID.Location = new System.Drawing.Point(3, 40);
+            this.tBID.Name = "tBID";
+            this.tBID.Size = new System.Drawing.Size(200, 22);
+            this.tBID.TabIndex = 1;
+            // 
+            // rBAtoZ
+            // 
+            this.rBAtoZ.AutoSize = true;
+            this.rBAtoZ.Location = new System.Drawing.Point(302, 11);
+            this.rBAtoZ.Name = "rBAtoZ";
+            this.rBAtoZ.Size = new System.Drawing.Size(62, 21);
+            this.rBAtoZ.TabIndex = 0;
+            this.rBAtoZ.TabStop = true;
+            this.rBAtoZ.Text = "А→Я";
+            this.rBAtoZ.UseVisualStyleBackColor = true;
             // 
             // dBShSub
             // 
@@ -236,34 +422,34 @@
             this.dBShSub.ItemHeight = 16;
             this.dBShSub.Location = new System.Drawing.Point(565, 33);
             this.dBShSub.Name = "dBShSub";
-            this.dBShSub.Size = new System.Drawing.Size(424, 244);
+            this.dBShSub.Size = new System.Drawing.Size(424, 260);
             this.dBShSub.TabIndex = 1;
             // 
-            // listBox1
+            // lBLogs
             // 
-            this.listBox1.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 16;
-            this.listBox1.Location = new System.Drawing.Point(8, 588);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(981, 100);
-            this.listBox1.TabIndex = 2;
+            this.lBLogs.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
+            this.lBLogs.FormattingEnabled = true;
+            this.lBLogs.ItemHeight = 16;
+            this.lBLogs.Location = new System.Drawing.Point(8, 588);
+            this.lBLogs.Name = "lBLogs";
+            this.lBLogs.Size = new System.Drawing.Size(981, 100);
+            this.lBLogs.TabIndex = 2;
             // 
             // dBShStud
             // 
             this.dBShStud.AccessibleRole = System.Windows.Forms.AccessibleRole.Text;
             this.dBShStud.FormattingEnabled = true;
             this.dBShStud.ItemHeight = 16;
-            this.dBShStud.Location = new System.Drawing.Point(565, 342);
+            this.dBShStud.Location = new System.Drawing.Point(565, 326);
             this.dBShStud.Name = "dBShStud";
-            this.dBShStud.Size = new System.Drawing.Size(424, 244);
+            this.dBShStud.Size = new System.Drawing.Size(424, 260);
             this.dBShStud.TabIndex = 3;
             // 
             // btnSStud
             // 
-            this.btnSStud.Location = new System.Drawing.Point(780, 283);
+            this.btnSStud.Location = new System.Drawing.Point(775, 294);
             this.btnSStud.Name = "btnSStud";
-            this.btnSStud.Size = new System.Drawing.Size(209, 53);
+            this.btnSStud.Size = new System.Drawing.Size(209, 30);
             this.btnSStud.TabIndex = 4;
             this.btnSStud.Text = "Показать студентов";
             this.btnSStud.UseVisualStyleBackColor = true;
@@ -271,9 +457,9 @@
             // 
             // btnSSub
             // 
-            this.btnSSub.Location = new System.Drawing.Point(565, 283);
+            this.btnSSub.Location = new System.Drawing.Point(565, 294);
             this.btnSSub.Name = "btnSSub";
-            this.btnSSub.Size = new System.Drawing.Size(209, 53);
+            this.btnSSub.Size = new System.Drawing.Size(209, 30);
             this.btnSSub.TabIndex = 5;
             this.btnSSub.Text = "Показать предметы";
             this.btnSSub.UseVisualStyleBackColor = true;
@@ -287,7 +473,7 @@
             this.Controls.Add(this.btnSSub);
             this.Controls.Add(this.btnSStud);
             this.Controls.Add(this.dBShStud);
-            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.lBLogs);
             this.Controls.Add(this.dBShSub);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
@@ -297,6 +483,10 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -322,10 +512,26 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.ListBox dBShSub;
         private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox lBLogs;
         private System.Windows.Forms.ListBox dBShStud;
         private System.Windows.Forms.Button btnSStud;
         private System.Windows.Forms.Button btnSSub;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox tBStudID;
+        private System.Windows.Forms.Button btnDelMark;
+        private System.Windows.Forms.Button btnPutMark;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox tBMark;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox tBSubID;
+        private System.Windows.Forms.RadioButton rBMidMark;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button btnShowAll;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox tBID;
+        private System.Windows.Forms.RadioButton rBAtoZ;
+        private System.Windows.Forms.ListBox lbIDs;
+        private System.Windows.Forms.Button btnClear;
     }
 }
 
