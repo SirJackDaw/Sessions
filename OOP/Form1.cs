@@ -25,7 +25,12 @@ C:\Users\Дмитрий\Documents\Visual Studio 2015\Projects\OOP\OOP\SessionDB.
             SessionConnection = new SqlConnection(connectionString);
             await SessionConnection.OpenAsync();
         }
-
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (SessionConnection != null || SessionConnection.State != ConnectionState.Closed)
+                SessionConnection.Close();
+            students.Clear();
+        }
         public static SqlConnection SessionConnection;
         public static List<Student> students = new List<Student>();
 
@@ -39,33 +44,41 @@ C:\Users\Дмитрий\Documents\Visual Studio 2015\Projects\OOP\OOP\SessionDB.
                 }
             return true;
         }
-        public static async void ReadDB(SqlCommand command, List<String> result, int numberOfColumns)//исправить, сделать без явного задания кол-ва строк
+        public bool CheckCorrectness(String checkParameter, TextBox parameter, int min, int max)
         {
-            SqlDataReader reader = null;
-            try
+            byte resultOfTrying;
+            bool result = Byte.TryParse(parameter.Text, out resultOfTrying);
+            if ((result == false) || (Convert.ToByte(parameter.Text) < min || Convert.ToByte(parameter.Text) > max))
             {
-                reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    String rec = null;
-                    for (var i = 0; i < numberOfColumns; i++)
-                    {
-                        rec = rec + Convert.ToString(reader[i]) + ",";
-
-                    }
-                    result.Add(rec);
-                }
+                { MessageBox.Show(checkParameter + " может быть числом от " + min + " до " + max, "Ошибка"); }
+                return false;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message.ToString(), ex.Source.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                if (reader != null) reader.Close();
-            }
+            return true;
         }
-        public async void ReadDB(SqlCommand command, ListBox dBShow, int numberOfColumns)//исправить, сделать без явного задания кол-ва строк
+        public bool CheckCorrectness(String checkParameter, TextBox parameter)
+        {
+            byte resultOfTrying;
+            bool result = Byte.TryParse(parameter.Text, out resultOfTrying);
+
+            if (result == false)
+            {
+                { MessageBox.Show(checkParameter + " должно быть числом", "Ошибка"); }
+                return false;
+            }
+            return true;
+        }
+        public bool CheckCorrectness(String checkParameter, TextBox parameter, long min)
+        {
+            long resultOfTrying;
+            bool result = Int64.TryParse(parameter.Text, out resultOfTrying);
+            if ((result != true) && ((Convert.ToInt64(parameter.Text) < min) || (Convert.ToInt64(parameter.Text) > Int64.MaxValue)))
+            {
+                { MessageBox.Show(checkParameter + " может быть числом от " + min + " до " + Int64.MaxValue, "Ошибка"); }
+                return false;
+            }
+            return true;
+        }
+        public async void PutToLBAsync(SqlCommand command, ListBox dBShow, int numberOfColumns)
         {
             SqlDataReader reader = null;
             try
@@ -96,11 +109,11 @@ C:\Users\Дмитрий\Documents\Visual Studio 2015\Projects\OOP\OOP\SessionDB.
             var log = DateTime.Now.ToString() + " " + message;
             lBLogs.Items.Add(log);
         }
-
+        /*
+         * События стрипа "Предмет/Студент"
+         */
         private async void btnCreateSubject_Click(object sender, EventArgs e)
         {
-            //проверка условий, все ли данные соотвествуют типам, пустота строк
-            //запись в логи о создании предмета
             if (CheckEmpty(true, tbTeachName, tbSubName))
             {
                 SqlCommand command = new SqlCommand("INSERT INTO [SUBJECTS] (Name, Teacher_Name) VALUES (@Name, @Teacher)", SessionConnection);
@@ -112,12 +125,9 @@ C:\Users\Дмитрий\Documents\Visual Studio 2015\Projects\OOP\OOP\SessionDB.
                 tbSubName.Clear();
             }
         }
-
         private async void btnCreateStudent_Click(object sender, EventArgs e)
         {
-            //проверка условий, все ли данные соотвествуют типам, пустота строк
-            //запись в логи о создании предмета
-            if (CheckEmpty(true, tbStudName, tbStudGroup, tbStudGroup))
+            if (CheckEmpty(true, tbStudName, tbStudGroup, tbStudGroup) && CheckCorrectness("Группа", tbStudGroup, 1, 20) && CheckCorrectness("Курс", tbStudCourse, 1, 6))
             {
                 SqlCommand command = new SqlCommand("INSERT INTO [STUDENTS] (Name, Course, Squad) VALUES (@Name, @Course, @Squad)", SessionConnection);
                 command.Parameters.AddWithValue("Name", tbStudName.Text);
@@ -130,35 +140,66 @@ C:\Users\Дмитрий\Documents\Visual Studio 2015\Projects\OOP\OOP\SessionDB.
                 tbStudName.Clear();
             }
         }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private async void btnDelSub_Click(object sender, EventArgs e)
         {
-            if (SessionConnection != null || SessionConnection.State != ConnectionState.Closed)
-                SessionConnection.Close();
-            students.Clear();
+            if(CheckEmpty(true, tBIDSubject) && CheckCorrectness("ID предмета", tBIDSubject, 1))
+            {
+                var command = "DELETE FROM [SUBJECTS] WHERE [ID] = @SubID " +
+                    "DELETE FROM [MARKS] WHERE [SubjectID] = @SubID";
+                SqlCommand delete = new SqlCommand(command, SessionConnection);
+                delete.Parameters.AddWithValue("SubID", tBIDSubject.Text);
+                await delete.ExecuteNonQueryAsync();
+                GenerateLogs("Удалён предмет с ID" + tBIDSubject.Text);
+                tBIDSubject.Clear();
+            }
         }
 
+        private async void btnDelStud_Click(object sender, EventArgs e)
+        {
+            if (CheckEmpty(true, tBIDStudent) && CheckCorrectness("ID студента", tBIDStudent, 1))
+            {
+                var command = "DELETE FROM [STUDENTS] WHERE [ID] = @StudID " +
+                    "DELETE FROM [MARKS] WHERE [StudentID] = @StudID";
+                SqlCommand delete = new SqlCommand(command, SessionConnection);
+                delete.Parameters.AddWithValue("StudID", tBIDStudent.Text);
+                await delete.ExecuteNonQueryAsync();
+                GenerateLogs("Удалён студент с ID" + tBIDStudent.Text);
+                tBIDSubject.Clear();
+            }
+        }
+        /*
+         * Показ студентов и предметов(пространство справа)
+         */
         private void btnSSub_Click(object sender, EventArgs e)
         {
             dBShSub.Items.Clear();
             SqlCommand command = new SqlCommand("SELECT * FROM [SUBJECTS]", SessionConnection);
-            ReadDB(command, dBShSub, 3);
+            PutToLBAsync(command, dBShSub, 3);
         }
 
         private void btnSStud_Click(object sender, EventArgs e)
         {
             dBShStud.Items.Clear();
             SqlCommand command = new SqlCommand("SELECT * FROM [STUDENTS]", SessionConnection);
-            ReadDB(command, dBShStud, 4);
+            PutToLBAsync(command, dBShStud, 4);
         }
+        
+
+        /*
+         * События стрипа "Оценки"
+         */
         private async void btnPutMark_Click(object sender, EventArgs e)
         {
-            if(CheckEmpty(true, tBStudID, tBSubID, tBMark))
+            if(CheckEmpty(true, tBStudID, tBSubID, tBMark) && CheckCorrectness("ID Студента", tBStudID) && CheckCorrectness("ID Предмета", tBSubID) && CheckCorrectness("Оценка", tBMark, 1, 100))
             {
+                SqlCommand delMark = new SqlCommand("DELETE FROM [MARKS] WHERE [SubjectID] = @SubID AND [StudentID] = @StudID", SessionConnection);
                 SqlCommand putMark = new SqlCommand("INSERT INTO [MARKS] (StudentID, SubjectID, Mark) VALUES (@StudentID, @SubjectID, @Mark)", SessionConnection);
                 putMark.Parameters.AddWithValue("StudentID", tBStudID.Text);
                 putMark.Parameters.AddWithValue("SubjectID", tBSubID.Text);
                 putMark.Parameters.AddWithValue("Mark", tBMark.Text);
+                delMark.Parameters.AddWithValue("StudID", tBStudID.Text);
+                delMark.Parameters.AddWithValue("SubID", tBSubID.Text);
+                delMark.ExecuteNonQuery();
                 await putMark.ExecuteNonQueryAsync();
                 GenerateLogs("Поставлена оценка: " + tBMark.Text + " студенту " + tBStudID.Text + " за предмет" + tBSubID.Text);
                 tBStudID.Clear();
@@ -194,19 +235,39 @@ C:\Users\Дмитрий\Documents\Visual Studio 2015\Projects\OOP\OOP\SessionDB.
             tBSubID.Clear();
             tBMark.Clear();            
         }
-
+        /*
+         * События стрипа "Найти"
+         */
         private void btnShowAll_Click(object sender, EventArgs e)
         {
-            Student student = new Student(tBID);
-            students.Add(student);
-            lbIDs.Items.Add(student.ToString());
+            if (CheckEmpty(true, tBID) && CheckCorrectness("ID", tBID, 1))
+            {
+                bool withAvarageMark = false;
+                Student student = new Student(tBID);
+                students.Add(student);
+                if (rBMidMark.Checked)
+                {
+                    if (cBAM.Checked) withAvarageMark = true;
+                    students.Sort();
+                    students.Reverse();
+                    foreach (var stud in students) stud.FillListBox(withAvarageMark,lbIDs);
+                }
+                else
+                {
+                    lbIDs.Items.Clear();
+                    if (cBAM.Checked) withAvarageMark = true;
+                    student.FillListBox(withAvarageMark ,lbIDs);
+                }
+            }
 
         }
-
+        
         private void btnClear_Click(object sender, EventArgs e)
         {
             lbIDs.Items.Clear();
             students.Clear();
         }
+
+       
     }
 }

@@ -7,36 +7,56 @@ using System.Data;
 using System.Data.SqlClient;
 namespace OOP
 {
-    public class Student
+    public class Student : IComparable<Student>
     {
         private String studentName;
         private byte studentCourse;
         private byte studentSquad;
-        private Subject[] exams;
+        private List<Subject> exams;
 
-        public Student(TextBox studentId)
+        public Student(TextBox id)
         {
-            String[] data = new String[3];
-            String command = "SELECT STUDENTS.NAME, STUDENTS.COURSE, STUDENTS.SQUAD" +
-           " FROM STUDENTS" +
-           " WHERE STUDENTS.ID=@studentID";
-            SqlCommand read = new SqlCommand(command, Form1.SessionConnection);
-            read.Parameters.AddWithValue("studentID", studentId.Text);
-            List<String> studentList = new List<String>();
-            Form1.ReadDB(read, studentList, 3);
-        
+            var data = new String [3];
+            //var subjects = new List<Subject>();
+            exams = new List<Subject>();
+            GetStudentFromDB(id, data);
+            Subject.GetSubjectFromDB(id, exams);
+            studentName = data[0];
+            studentCourse = Convert.ToByte(data[1]);
+            studentSquad = Convert.ToByte(data[2]);
         }
-        /*public override string ToString()
+        public int CompareTo(Student student)
         {
-            if (exams == null) return null;
-            String result = null;
-            foreach (Subject Sub in exams)
-            {
-                result = studentName + " " + studentCourse + " " + studentSquad + " " + Sub.ToString() + '\n';
-            }
-            result += "Средний балл: " + AvarageMark();
-            return result;
-        }*/
+                return this.AvarageMark().CompareTo(student.AvarageMark());
+        }
+        public void GetStudentFromDB(TextBox id, String[] data)
+        {
+                    String command = "SELECT STUDENTS.NAME, STUDENTS.COURSE, STUDENTS.SQUAD" +
+                         " FROM STUDENTS" +
+                         " WHERE STUDENTS.ID=@WrittenID";
+                    SqlCommand read = new SqlCommand(command, Form1.SessionConnection);
+                    read.Parameters.AddWithValue("WrittenID", id.Text);
+                    SqlDataReader reader = null;
+                    try
+                    {
+                        reader = read.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            for (var i = 0; i < 3; i++)
+                            {
+                                data[i] = Convert.ToString(reader[i]);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message.ToString(), ex.Source.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    finally
+                    {
+                        if (reader != null) reader.Close();
+                    }
+        }
         public double AvarageMark()
         {
             var summary = 0;
@@ -44,81 +64,111 @@ namespace OOP
             {
                 summary = summary + exam.Mark;
             }
-            return (double)summary / exams.Length;
+            return (double)summary / exams.Count;
         }
-        public void GetStudentData()
+        /*
+         * Перегрузки операторов и методы возвращения значений
+         */
+        public override bool Equals(object input)
         {
+            if((input is Student) && (((Student)input).AvarageMark() == this.AvarageMark()))
+            {
+                    return true;
+            }
+            return false;
+        }
+        public override int GetHashCode()
+        {
+            return ToString().GetHashCode();
+        }
+        public static bool operator ==(Student a, Student b) => a.Equals(b);
+        public static bool operator !=(Student a, Student b) => !a.Equals(b);
+        public static bool operator <(Student a, Student b) => (a.AvarageMark() < b.AvarageMark());
+        public static bool operator >(Student a, Student b) => (a.AvarageMark() > b.AvarageMark());
+        public override string ToString()
+        {
+            String result = studentName + " " + studentCourse + " " + studentSquad + ' ';
+            return result;
+        }
+        public void FillListBox(bool withAvarageMark, ListBox listBox)
+        {
+            foreach (var exam in exams)
+            {
+                String line = ToString() + exam.ToString();
+                listBox.Items.Add(line);
+            }
+            if(withAvarageMark) listBox.Items.Add("Средний балл: " + AvarageMark());
+        }
 
-        }
-        public static bool operator == (Student a, Student b)
-        {
-            return (a.AvarageMark() == b.AvarageMark());
-        }
-        public static bool operator !=(Student a, Student b)
-        {
-            return (a.AvarageMark() != b.AvarageMark());
-        }
-        public static bool operator <(Student a, Student b)
-        {
-            return (a.AvarageMark() < b.AvarageMark());
-        }
-        public static bool operator >(Student a, Student b)
-        {
-            return (a.AvarageMark() > b.AvarageMark());
-        }
+
     }
-    public class Subject
+    public class Subject : IComparable<Subject>
     {
         private String subjectName;
         private String teacherName;
         private byte mark;
 
+        public int CompareTo(Subject subject)
+        {
+                return this.mark.CompareTo(subject.mark);
+
+        }
         public Subject(String[] data)
         {
             subjectName = data[0];
             teacherName = data[1];
             mark = Convert.ToByte(data[2]);
         }
-        public override string ToString()
+        public static void GetSubjectFromDB(TextBox id, List<Subject> subjects)
+        /*Не разобрался в асинхронных процессах, поэтому такая реализация*/
         {
-            return subjectName + " " + teacherName + " " + mark;
-        }
-
-        public static List<Subject> GetSubjectFromDB(TextBox id)
-        {
-            List<Subject> subjects = new List<Subject>();
             var command = "SELECT SUBJECTS.NAME, SUBJECTS.TEACHER_NAME, MARKS.Mark " +
                     "FROM STUDENTS, SUBJECTS, MARKS" +
                     " WHERE MARKS.StudentID = STUDENTS.ID AND SUBJECTS.ID = MARKS.SubjectID AND STUDENTS.ID = @WrittenID";
             SqlCommand read = new SqlCommand(command, Form1.SessionConnection);
             read.Parameters.AddWithValue("WrittenID", id.Text);
-            List<String> subjectList = new List<string>();
-            Form1.ReadDB(read, subjectList, 3);
-            foreach (var subject in subjectList)
+            SqlDataReader reader = null;
+            try
             {
-                var data = subject.Split(',');
-                var sub = new Subject(data);
-                subjects.Add(sub);
+                reader =  read.ExecuteReader();
+                while ( reader.Read())
+                {
+                    var data = new String[3];
+                    for (var i = 0; i < 3; i++)
+                    {
+                        data[i] = Convert.ToString(reader[i]);
+                    }
+                    var sub = new Subject(data);
+                    subjects.Add(sub);
+                    subjects.Sort();
+                    subjects.Reverse();
+                }
             }
-            return subjects;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString(), ex.Source.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                if (reader != null) reader.Close();
+            }
         }
+        /*
+         * Перегрузки операторов и методы возвращения значений
+         */
         public byte Mark => mark;
-        public static bool operator ==(Subject a, Subject b) => (a.mark == b.mark);
-        public static bool operator !=(Subject a, Subject b) => (a.mark != b.mark);
-        public static bool operator <(Subject a, Subject b)
+        public static bool operator ==(Subject a, Subject b) => (a.Mark == b.Mark);
+        public static bool operator !=(Subject a, Subject b) => (a.Mark != b.Mark);
+        public static bool operator <(Subject a, Subject b) => (a.Mark < b.Mark);
+        public static bool operator >(Subject a, Subject b) => (a.Mark > b.Mark);
+        public override string ToString()
         {
-            return (a.mark < b.mark);
-        }
-        public static bool operator >(Subject a, Subject b)
-        {
-            return (a.mark > b.mark);
+            return subjectName + " " + teacherName + " " + mark;
         }
     }
     static class Program
     {
-        /// <summary>
-        /// Главная точка входа для приложения.
-        /// </summary>
+
         [STAThread]
         static void Main()
         {
